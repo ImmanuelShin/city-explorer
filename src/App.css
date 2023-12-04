@@ -44,11 +44,29 @@
   color: #888;
 }
 
+.explore-form-button {
+  margin-top: 1vh;
+}
+
 .city-card {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: #585858;
+  background-color: #757575;
   border-radius: 15px;
   margin: min(2vw, 2vh);
+  color: white;
+}
+
+.city-card .card-img-bottom {
+  background-color: rgb(59, 59, 59);
+  padding: 1vw;
+  border-radius: 10px;
+}
+
+.card-text-container {
+  background-color: rgb(59, 59, 59);
+  border-radius: 10px;
+  margin-bottom: 2vh;
+  padding: 1em;
 }
