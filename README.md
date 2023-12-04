@@ -52,10 +52,10 @@ Actual time needed to complete: 18 minutes.
 
 ### Errors
 
-Estimate of time needed to complete: 1 hours
+Estimate of time needed to complete: 1 hour
 
 Start time: 3:13 pm
 
-Finish time: 3:12 pm
+Finish time: 3:50 pm
 
-Actual time needed to complete: 18 minutes.
+Actual time needed to complete: 37 minutes.
