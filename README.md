@@ -30,12 +30,22 @@ City Explorer will be built with React.js, Axios, and LocationIQ API.
 
 ## Time Estimates
 
-Name of feature: Locations
+### Locations
 
 Estimate of time needed to complete: 2 hours
 
-Start time: 2:03pm
+Start time: 2:03 pm
 
-Finish time:
+Finish time: 2:53 pm
 
-Actual time needed to complete:
+Actual time needed to complete: 50 minutes.
+
+### Map
+
+Estimate of time needed to complete: 2 hours
+
+Start time: 2:54 pm
+
+Finish time: 2:53 pm
+
+Actual time needed to complete: 50 minutes.
