@@ -3,6 +3,9 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  background-color: black;
+  border-radius: 20px;
+  color: white;
 }
 
 .logo {
@@ -39,4 +42,13 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.city-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #585858;
+  border-radius: 15px;
+  margin: min(2vw, 2vh);
 }
