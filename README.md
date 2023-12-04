@@ -20,7 +20,7 @@ City Explorer will be built with React.js, Axios, and LocationIQ API.
 
 01-01-2001 4:59pm - Application now has a fully-functional express server, with a GET route for the location resource. -->
 
-12-04-2023 
+12-04-2023 3:53 - Application now has base functionality for city search, coordinate retrieval, and map retrieval.
 
 ## Credit and Collaborations
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
