@@ -9,8 +9,8 @@ const API_KEY = import.meta.env.VITE_GEO_API_KEY;
 
 function ExploreForm() {
   const [location, setLocation] = useState('');
-  const [long, setLong] = useState('');
   const [lat, setLat] = useState('');
+  const [long, setLong] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -41,7 +41,10 @@ function ExploreForm() {
         </Button>
       </Form>
       {formSubmitted && (
-        <Card style={{width: '20vw'}}>
+        <Card 
+        style={{width: '30vw'}}
+        className='city-card'
+        >
           <Card.Body>
             <Card.Title>{location}</Card.Title>
             <Card.Text>
@@ -50,6 +53,12 @@ function ExploreForm() {
             <Card.Text>
               Long: {long}
             </Card.Text>
+            <Card.Img 
+            variant='bottom' 
+            src={`https://maps.locationiq.com/v3/staticmap?key=${API_KEY}&center=${lat},${long}&zoom=12`} 
+            style={{ width: '30vw', height: '30vw' }}
+            className=''
+            />
           </Card.Body>
         </Card>
       )}
