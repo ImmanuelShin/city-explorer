@@ -1,14 +1,17 @@
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 import { useState } from 'react';
 import axios from 'axios';
+import { CardGroup } from 'react-bootstrap';
 
 const API_KEY = import.meta.env.VITE_GEO_API_KEY;
 
-function ExploreForm(props) {
+function ExploreForm() {
   const [location, setLocation] = useState('');
   const [long, setLong] = useState('');
   const [lat, setLat] = useState('');
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +21,7 @@ function ExploreForm(props) {
     setLocation(response.data[0].display_name);
     setLat(response.data[0].lat);
     setLong(response.data[0].lon);
+    setFormSubmitted(true);
   }
 
   return (
@@ -36,9 +40,19 @@ function ExploreForm(props) {
           Explore!
         </Button>
       </Form>
-      <h3>{location}</h3>
-      <h3>{long}</h3>
-      <h3>{lat}</h3>
+      {formSubmitted && (
+        <Card style={{width: '20vw'}}>
+          <Card.Body>
+            <Card.Title>{location}</Card.Title>
+            <Card.Text>
+              Lat: {lat}
+            </Card.Text>
+            <Card.Text>
+              Long: {long}
+            </Card.Text>
+          </Card.Body>
+        </Card>
+      )}
     </section>
   )
 }
