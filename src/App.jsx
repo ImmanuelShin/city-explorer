@@ -8,7 +8,7 @@ function App() {
   const [error, setError] = useState(null);
 
   const handleAPIError = (error) => {
-    setError({ code: error.response.status });
+    setError({ code: error?.response?.status || 'Unknown Error' });
   };
 
   return (
