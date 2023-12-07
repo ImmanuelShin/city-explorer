@@ -1,14 +1,21 @@
-import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
+import Carousel from 'react-bootstrap/Carousel';
+import Movie from './Movie';
 
 function Movies(props) {
   if (!props.movies) {
     return null;
   }
-
+  
   const filteredMovies = props.movies.filter(movie => {
     if (typeof movie === 'object') {
-      return Object.values(movie).some(str => String(str).includes(props.location));
+      return Object.values(movie).some(str => {
+        if(String(str).toLowerCase().includes(String(props.location).toLowerCase())){
+          return true;
+        } else {
+          return false;
+        }
+      });
     }
     return false;
   });
@@ -18,13 +25,15 @@ function Movies(props) {
       <Card.Body>
         <Card.Title>Movies</Card.Title>
         {filteredMovies.length > 0 ? (
-          <Card.Text>
+          <Carousel>
             {filteredMovies.map((movie, index) => (
-              <div key={index}>
-                <p>{movie.title}</p>
-              </div>
+              <Carousel.Item key={index}>
+                <Movie
+                  movie={movie}
+                />
+              </Carousel.Item>
             ))}
-          </Card.Text>
+          </Carousel>
         ) : (
           <Card.Text>No movies containing this city</Card.Text>
         )}
