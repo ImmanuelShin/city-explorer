@@ -9,11 +9,10 @@ function Error(props) {
     400: 'Bad Request: The request could not be understood or was missing required parameters.',
     401: 'Unauthorized: Authentication failed or user does not have permissions for the requested operation.',
     404: 'Not Found: The requested resource could not be found.',
+    429: 'Weather API call limit reached.'
   };
 
-  const defaultMessage = 'An error occurred. Please try again later.';
-
-  const errorMessage = errorMessages[props.errorCode] || defaultMessage;
+  const errorMessage = errorMessages[props.errorCode] || `Unknown Error: ${props.errorCode}`;
 
   return (
     <Modal show={true} onHide={props.onClose}>

@@ -87,6 +87,7 @@ function ExploreForm(props) {
         }));
       }
     } catch (error) {
+      console.log(error);
       props.onError(error);
     }
   };
