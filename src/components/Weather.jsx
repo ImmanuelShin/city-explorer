@@ -11,14 +11,12 @@ function Weather(props) {
         <Card.Title>{props.location}</Card.Title>
         <Card.Text>Weather</Card.Text>
         <Card.Text>
-          <div>
-            {props.weatherData.map((item, index) => (
-              <WeatherDay 
-                key={index}
-                day={item}
-              />
-            ))}
-          </div>
+          {props.weatherData.map((item, index) => (
+            <WeatherDay
+              key={index}
+              day={item}
+            />
+          ))}
         </Card.Text>
       </Card.Body>
     </Card>
