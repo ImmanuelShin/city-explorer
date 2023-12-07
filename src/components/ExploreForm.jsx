@@ -9,7 +9,7 @@ import axios from 'axios';
 const API_KEY = import.meta.env.VITE_GEO_API_KEY;
 
 function ExploreForm(props) {
-  const { cache, onError, setCache } = props;
+  const { cache, setCache } = props;
 
   const [location, setLocation] = useState('');
   const [fullLocation, setFullLocation] = useState('');
@@ -26,7 +26,7 @@ function ExploreForm(props) {
 
       if (cache[city]) {
         // Use cached data
-        console.log('caching');
+        console.log('caching submit');
         setLocation(cache[city].location);
         setFullLocation(cache[city].fullLocation);
         setLat(cache[city].lat);
@@ -34,7 +34,7 @@ function ExploreForm(props) {
         setFormSubmitted(true);
       } else {
         // Make API call and update cache
-        console.log('calling');
+        console.log('calling submit');
         const API = `https://us1.locationiq.com/v1/search.php?key=${API_KEY}&q=${city}&format=json`;
         const response = await axios.get(API);
 
@@ -49,17 +49,17 @@ function ExploreForm(props) {
           const updatedCache = {
             ...prevCache,
             [city]: {
-              location: { location },
-              fullLocation: { fullLocation },
-              lat: { lat },
-              long: { long },
+              location: response.data[0].display_name.split(',')[0],
+              fullLocation: response.data[0].display_name,
+              lat: response.data[0].lat,
+              long: response.data[0].lon,
             },
           };
           return updatedCache;
         });
       }
     } catch (error) {
-      onError(error);
+      props.onError(error);
     }
   };
 
@@ -68,9 +68,11 @@ function ExploreForm(props) {
     try {
       if (cache[`${lat},${long}`]) {
         // Use cached data
+        console.log('caching weather');
         setWeatherData(cache[`${lat},${long}`]);
       } else {
         // Make API call and update cache
+        console.log('calling weather');
         const weatherApi = `https://city-explorer-api-o9yy.onrender.com/weather?lat=${lat}&lon=${long}`;
         const weatherResponse = await axios.get(weatherApi);
         setWeatherData(weatherResponse.data);
@@ -85,7 +87,7 @@ function ExploreForm(props) {
         }));
       }
     } catch (error) {
-      onError(error);
+      props.onError(error);
     }
   };
 
@@ -96,10 +98,11 @@ function ExploreForm(props) {
 
       if (cache[movieAPI]) {
         // Use cached data
+        console.log('caching movie');
         setMovieData(cache[movieAPI]);
       } else {
         // Make API call and update cache
-        console.log('calling');
+        console.log('calling movie');
         const movieResponse = await axios.get(movieAPI);
         setMovieData(movieResponse.data);
 
@@ -107,7 +110,7 @@ function ExploreForm(props) {
         cache[movieAPI] = movieResponse.data;
       }
     } catch (error) {
-      onError(error);
+      props.onError(error);
     }
   };
 
@@ -170,7 +173,6 @@ function ExploreForm(props) {
           />
         </>
       )}
-
     </section>
   )
 }

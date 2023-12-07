@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Carousel from 'react-bootstrap/Carousel';
 import Movie from './Movie';
