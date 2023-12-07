@@ -5,8 +5,6 @@ function Movies(props) {
   if (!props.movies) {
     return null;
   }
-  
-  console.log("Props.movies:", props.movies);
 
   const filteredMovies = props.movies.filter(movie => {
     if (typeof movie === 'object') {
