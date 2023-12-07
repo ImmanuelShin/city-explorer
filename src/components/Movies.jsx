@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
+import Movie from './Movie';
 
 function Movies(props) {
   if (!props.movies) {
     return null;
   }
-  
-  console.log("Props.movies:", props.movies);
-
   const filteredMovies = props.movies.filter(movie => {
     if (typeof movie === 'object') {
       return Object.values(movie).some(str => String(str).includes(props.location));
@@ -22,9 +20,10 @@ function Movies(props) {
         {filteredMovies.length > 0 ? (
           <Card.Text>
             {filteredMovies.map((movie, index) => (
-              <div key={index}>
-                <p>{movie.title}</p>
-              </div>
+              <Movie 
+                key={index}
+                movie={movie}
+              />
             ))}
           </Card.Text>
         ) : (
