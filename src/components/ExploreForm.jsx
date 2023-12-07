@@ -48,8 +48,8 @@ function ExploreForm(props) {
   const handleMovies = async (e) => {
     e.preventDefault();
     try {
-      const weatherApi = `https://city-explorer-api-o9yy.onrender.com/Movies`;
-      // const movieAPI = `http://localhost:3003/movies?region=US`;
+      const movieAPI = `https://city-explorer-api-o9yy.onrender.com/movies`;
+      // const movieAPI = `http://localhost:3003/movies`;
       const movieResponse = await axios.get(movieAPI);
       setMovieData(movieResponse.data);
     } catch (error) {
