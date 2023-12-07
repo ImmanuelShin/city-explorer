@@ -22,6 +22,8 @@ City Explorer will be built with React.js, Axios, and LocationIQ API.
 
 12-04-2023 3:53 - Application now has base functionality for city search, coordinate retrieval, and map retrieval.
 
+12-06-2023 4:08 - Application allows for searching of weather at location and movies that contain location's name.
+
 ## Credit and Collaborations
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
 
