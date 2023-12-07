@@ -9,6 +9,8 @@ import axios from 'axios';
 const API_KEY = import.meta.env.VITE_GEO_API_KEY;
 
 function ExploreForm(props) {
+  const { cache, onError, setCache } = props;
+
   const [location, setLocation] = useState('');
   const [fullLocation, setFullLocation] = useState('');
   const [lat, setLat] = useState('');
@@ -20,42 +22,94 @@ function ExploreForm(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const city = event.target.elements.exploreFormCity.value;
-      const API = `https://us1.locationiq.com/v1/search.php?key=${API_KEY}&q=${city}&format=json`;
-      const response = await axios.get(API);
-      setLocation(response.data[0].display_name.split(',')[0]);
-      setFullLocation(response.data[0].display_name);
-      setLat(response.data[0].lat);
-      setLong(response.data[0].lon);
-      setFormSubmitted(true);
+      const city = e.target.elements.exploreFormCity.value;
+
+      if (cache[city]) {
+        // Use cached data
+        console.log('caching');
+        setLocation(cache[city].location);
+        setFullLocation(cache[city].fullLocation);
+        setLat(cache[city].lat);
+        setLong(cache[city].long);
+        setFormSubmitted(true);
+      } else {
+        // Make API call and update cache
+        console.log('calling');
+        const API = `https://us1.locationiq.com/v1/search.php?key=${API_KEY}&q=${city}&format=json`;
+        const response = await axios.get(API);
+
+        setLocation(response.data[0].display_name.split(',')[0]);
+        setFullLocation(response.data[0].display_name);
+        setLat(response.data[0].lat);
+        setLong(response.data[0].lon);
+        setFormSubmitted(true);
+
+        // Update cache
+        setCache((prevCache) => {
+          const updatedCache = {
+            ...prevCache,
+            [city]: {
+              location: { location },
+              fullLocation: { fullLocation },
+              lat: { lat },
+              long: { long },
+            },
+          };
+          return updatedCache;
+        });
+      }
     } catch (error) {
-      props.onError(error);
+      onError(error);
     }
-  }
+  };
 
   const handleWeather = async (e) => {
     e.preventDefault();
     try {
-      const weatherApi = `https://city-explorer-api-o9yy.onrender.com/weather?lat=${lat}&lon=${long}`;
-      // const weatherApi = `http://localhost:3003/weather?lat=${lat}&lon=${long}`;
-      const weatherResponse = await axios.get(weatherApi);
-      setWeatherData(weatherResponse.data);
+      if (cache[`${lat},${long}`]) {
+        // Use cached data
+        setWeatherData(cache[`${lat},${long}`]);
+      } else {
+        // Make API call and update cache
+        const weatherApi = `https://city-explorer-api-o9yy.onrender.com/weather?lat=${lat}&lon=${long}`;
+        const weatherResponse = await axios.get(weatherApi);
+        setWeatherData(weatherResponse.data);
+
+        // Update cache
+        setCache((prevCache) => ({
+          ...prevCache,
+          [`${lat},${long}`]: {
+            description: weatherResponse.data[0].description,
+            date: weatherResponse.data[0].date,
+          }
+        }));
+      }
     } catch (error) {
-      props.onError(error);
+      onError(error);
     }
-  }
+  };
 
   const handleMovies = async (e) => {
     e.preventDefault();
     try {
       const movieAPI = `https://city-explorer-api-o9yy.onrender.com/movies`;
-      // const movieAPI = `http://localhost:3003/movies`;
-      const movieResponse = await axios.get(movieAPI);
-      setMovieData(movieResponse.data);
+
+      if (cache[movieAPI]) {
+        // Use cached data
+        setMovieData(cache[movieAPI]);
+      } else {
+        // Make API call and update cache
+        console.log('calling');
+        const movieResponse = await axios.get(movieAPI);
+        setMovieData(movieResponse.data);
+
+        // Update cache
+        cache[movieAPI] = movieResponse.data;
+      }
     } catch (error) {
-      props.onError(error);
+      onError(error);
     }
-  }
+  };
 
   const handleBoth = async (e) => {
     e.preventDefault();
@@ -95,7 +149,6 @@ function ExploreForm(props) {
                   Long: {long}
                 </Card.Text>
               </div>
-
               <Card.Img
                 variant='bottom'
                 src={`https://maps.locationiq.com/v3/staticmap?key=${API_KEY}&center=${lat},${long}&zoom=12`}
@@ -111,7 +164,7 @@ function ExploreForm(props) {
             weatherData={weatherData}
             location={location}
           />
-          <Movies 
+          <Movies
             movies={movieData}
             location={location}
           />
