@@ -9,7 +9,6 @@ import axios from 'axios';
 const API_KEY = import.meta.env.VITE_GEO_API_KEY;
 
 function ExploreForm(props) {
-  const { cache, setCache } = props;
 
   const [location, setLocation] = useState('');
   const [fullLocation, setFullLocation] = useState('');
@@ -23,41 +22,16 @@ function ExploreForm(props) {
     e.preventDefault();
     try {
       const city = e.target.elements.exploreFormCity.value;
+      // Make API call and update cache
+      console.log('calling submit');
+      const API = `https://us1.locationiq.com/v1/search.php?key=${API_KEY}&q=${city}&format=json`;
+      const response = await axios.get(API);
 
-      if (cache[city]) {
-        // Use cached data
-        console.log('caching submit');
-        setLocation(cache[city].location);
-        setFullLocation(cache[city].fullLocation);
-        setLat(cache[city].lat);
-        setLong(cache[city].long);
-        setFormSubmitted(true);
-      } else {
-        // Make API call and update cache
-        console.log('calling submit');
-        const API = `https://us1.locationiq.com/v1/search.php?key=${API_KEY}&q=${city}&format=json`;
-        const response = await axios.get(API);
-
-        setLocation(response.data[0].display_name.split(',')[0]);
-        setFullLocation(response.data[0].display_name);
-        setLat(response.data[0].lat);
-        setLong(response.data[0].lon);
-        setFormSubmitted(true);
-
-        // Update cache
-        setCache((prevCache) => {
-          const updatedCache = {
-            ...prevCache,
-            [city]: {
-              location: response.data[0].display_name.split(',')[0],
-              fullLocation: response.data[0].display_name,
-              lat: response.data[0].lat,
-              long: response.data[0].lon,
-            },
-          };
-          return updatedCache;
-        });
-      }
+      setLocation(response.data[0].display_name.split(',')[0]);
+      setFullLocation(response.data[0].display_name);
+      setLat(response.data[0].lat);
+      setLong(response.data[0].lon);
+      setFormSubmitted(true);
     } catch (error) {
       props.onError(error);
     }
@@ -66,26 +40,11 @@ function ExploreForm(props) {
   const handleWeather = async (e) => {
     e.preventDefault();
     try {
-      if (cache[`${lat},${long}`]) {
-        // Use cached data
-        console.log('caching weather');
-        setWeatherData(cache[`${lat},${long}`]);
-      } else {
-        // Make API call and update cache
-        console.log('calling weather');
-        const weatherApi = `https://city-explorer-api-o9yy.onrender.com/weather?lat=${lat}&lon=${long}`;
-        const weatherResponse = await axios.get(weatherApi);
-        setWeatherData(weatherResponse.data);
-
-        // Update cache
-        setCache((prevCache) => ({
-          ...prevCache,
-          [`${lat},${long}`]: {
-            description: weatherResponse.data[0].description,
-            date: weatherResponse.data[0].date,
-          }
-        }));
-      }
+      // Make API call and update cache
+      console.log('calling weather');
+      const weatherApi = `https://city-explorer-api-o9yy.onrender.com/weather?lat=${lat}&lon=${long}`;
+      const weatherResponse = await axios.get(weatherApi);
+      setWeatherData(weatherResponse.data);
     } catch (error) {
       console.log(error);
       props.onError(error);
@@ -96,20 +55,11 @@ function ExploreForm(props) {
     e.preventDefault();
     try {
       const movieAPI = `https://city-explorer-api-o9yy.onrender.com/movies`;
+      // Make API call and update cache
+      console.log('calling movie');
+      const movieResponse = await axios.get(movieAPI);
+      setMovieData(movieResponse.data);
 
-      if (cache[movieAPI]) {
-        // Use cached data
-        console.log('caching movie');
-        setMovieData(cache[movieAPI]);
-      } else {
-        // Make API call and update cache
-        console.log('calling movie');
-        const movieResponse = await axios.get(movieAPI);
-        setMovieData(movieResponse.data);
-
-        // Update cache
-        cache[movieAPI] = movieResponse.data;
-      }
     } catch (error) {
       props.onError(error);
     }
