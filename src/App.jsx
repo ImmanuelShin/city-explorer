@@ -7,20 +7,20 @@ import Error from './components/Error';
 
 function App() {
   const [error, setError] = useState(null);
-  const [cache, setCache] = useState({});
 
   const handleAPIError = (error) => {
-    setError({ code: error?.response?.status || 'Unknown Error' });
+    setError({
+      code: error?.response?.status || 'Unknown Error',
+      message: error?.response?.data?.message || 'No additional error message',
+    });
   };
 
   return (
     <>
       <ExploreForm 
         onError={handleAPIError}
-        cache={cache}
-        setCache={setCache}
       />
-      {error && <Error errorCode={error.code} onClose={() => setError(null)} />}
+      {error && <Error errorCode={error.code} errorMessage={error.message} onClose={() => setError(null)} />}
     </>
   )
 }

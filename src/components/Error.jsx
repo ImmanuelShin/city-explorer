@@ -2,17 +2,8 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
 function Error(props) {
-  const errorMessages = {
-    200: 'OK: The request was successful.',
-    201: 'Created: The request was successful, and a resource was created.',
-    204: 'No Content: The request was successful, but there is no additional information to send.',
-    400: 'Bad Request: The request could not be understood or was missing required parameters.',
-    401: 'Unauthorized: Authentication failed or user does not have permissions for the requested operation.',
-    404: 'Not Found: The requested resource could not be found.',
-    429: 'Weather API call limit reached.'
-  };
 
-  const errorMessage = errorMessages[props.errorCode] || `Unknown Error: ${props.errorCode}`;
+  const errorMessage = props.errorCode + ": " + props.errorMessage || `Unknown Error: ${props.errorCode}`;
 
   return (
     <Modal show={true} onHide={props.onClose}>

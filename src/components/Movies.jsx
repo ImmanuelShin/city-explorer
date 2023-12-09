@@ -1,11 +1,17 @@
 import Card from 'react-bootstrap/Card';
 import Carousel from 'react-bootstrap/Carousel';
 import Movie from './Movie';
+import { useState } from 'react';
 
 function Movies(props) {
   if (!props.movies) {
     return null;
+  } else {
+    props.updateStatus(false);
   }
+
+
+  // const newDate = new Date();
   
   const filteredMovies = props.movies.filter(movie => {
     if (typeof movie === 'object') {
@@ -38,6 +44,9 @@ function Movies(props) {
           <Card.Text>No movies containing this city</Card.Text>
         )}
       </Card.Body>
+      <Card.Footer>
+        Retrieved: {props.date}
+      </Card.Footer>
     </Card>
   )
 }

@@ -5,11 +5,11 @@ import Weather from './Weather';
 import Movies from './Movies';
 import { useState } from 'react';
 import axios from 'axios';
+import Timer from './Timer';
 
 const API_KEY = import.meta.env.VITE_GEO_API_KEY;
 
 function ExploreForm(props) {
-  const { cache, setCache } = props;
 
   const [location, setLocation] = useState('');
   const [fullLocation, setFullLocation] = useState('');
@@ -18,46 +18,42 @@ function ExploreForm(props) {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [weatherData, setWeatherData] = useState(null);
   const [movieData, setMovieData] = useState(null);
+  const [weatherStatus, setWeatherStatus] = useState(null);
+  const [movieStatus, setMovieStatus] = useState(null);
+
+  const [weatherDate, setWeatherDate] = useState('');
+  const [movieDate, setMovieDate] = useState('');
+
+  const testError = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.get('https://city-explorer-api-o9yy.onrender.com/error');
+    } catch (error) {
+      props.onError(error);
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const city = e.target.elements.exploreFormCity.value;
-
-      if (cache[city]) {
-        // Use cached data
-        console.log('caching submit');
-        setLocation(cache[city].location);
-        setFullLocation(cache[city].fullLocation);
-        setLat(cache[city].lat);
-        setLong(cache[city].long);
-        setFormSubmitted(true);
-      } else {
-        // Make API call and update cache
-        console.log('calling submit');
-        const API = `https://us1.locationiq.com/v1/search.php?key=${API_KEY}&q=${city}&format=json`;
-        const response = await axios.get(API);
-
-        setLocation(response.data[0].display_name.split(',')[0]);
-        setFullLocation(response.data[0].display_name);
-        setLat(response.data[0].lat);
-        setLong(response.data[0].lon);
-        setFormSubmitted(true);
-
-        // Update cache
-        setCache((prevCache) => {
-          const updatedCache = {
-            ...prevCache,
-            [city]: {
-              location: response.data[0].display_name.split(',')[0],
-              fullLocation: response.data[0].display_name,
-              lat: response.data[0].lat,
-              long: response.data[0].lon,
-            },
-          };
-          return updatedCache;
-        });
+      if (String(city).toLowerCase() !== String(location).toLowerCase()) {
+        // Reset data if the input has changed
+        setMovieData(null);
+        setWeatherData(null);
+        setMovieStatus(null);
+        setWeatherStatus(null);
       }
+
+      // Make API call and update cache
+      const API = `https://us1.locationiq.com/v1/search.php?key=${API_KEY}&q=${city}&format=json`;
+      const response = await axios.get(API);
+
+      setLocation(response.data[0].display_name.split(',')[0]);
+      setFullLocation(response.data[0].display_name);
+      setLat(response.data[0].lat);
+      setLong(response.data[0].lon);
+      setFormSubmitted(true);
     } catch (error) {
       props.onError(error);
     }
@@ -65,61 +61,34 @@ function ExploreForm(props) {
 
   const handleWeather = async (e) => {
     e.preventDefault();
+    setWeatherStatus(true);
+    const date = new Date();
+    setWeatherDate(date.toString());
     try {
-      if (cache[`${lat},${long}`]) {
-        // Use cached data
-        console.log('caching weather');
-        setWeatherData(cache[`${lat},${long}`]);
-      } else {
-        // Make API call and update cache
-        console.log('calling weather');
-        const weatherApi = `https://city-explorer-api-o9yy.onrender.com/weather?lat=${lat}&lon=${long}`;
-        const weatherResponse = await axios.get(weatherApi);
-        setWeatherData(weatherResponse.data);
-
-        // Update cache
-        setCache((prevCache) => ({
-          ...prevCache,
-          [`${lat},${long}`]: {
-            description: weatherResponse.data[0].description,
-            date: weatherResponse.data[0].date,
-          }
-        }));
-      }
+      const weatherApi = `https://city-explorer-api-o9yy.onrender.com/weather?lat=${lat}&lon=${long}`;
+      const weatherResponse = await axios.get(weatherApi);
+      setWeatherData(weatherResponse.data);
     } catch (error) {
-      console.log(error);
+      setWeatherStatus(false);
       props.onError(error);
     }
   };
 
   const handleMovies = async (e) => {
     e.preventDefault();
+    setMovieStatus(true);
+    const date = new Date();
+    setMovieDate(date.toString());
     try {
       const movieAPI = `https://city-explorer-api-o9yy.onrender.com/movies`;
-
-      if (cache[movieAPI]) {
-        // Use cached data
-        console.log('caching movie');
-        setMovieData(cache[movieAPI]);
-      } else {
-        // Make API call and update cache
-        console.log('calling movie');
-        const movieResponse = await axios.get(movieAPI);
-        setMovieData(movieResponse.data);
-
-        // Update cache
-        cache[movieAPI] = movieResponse.data;
-      }
+      // Make API call and update cache
+      const movieResponse = await axios.get(movieAPI);
+      setMovieData(movieResponse.data);
     } catch (error) {
+      setMovieStatus(false);
       props.onError(error);
     }
   };
-
-  const handleBoth = async (e) => {
-    e.preventDefault();
-    await handleWeather(e);
-    await handleMovies(e);
-  }
 
   return (
     <section className='explore-form-area'>
@@ -160,17 +129,32 @@ function ExploreForm(props) {
                 className=''
               />
             </Card.Body>
-            <Button variant='info' onClick={handleBoth} >
-              Get Weather
-            </Button>
           </Card>
+          <Button variant='info' onClick={handleWeather} >
+            Get Weather
+          </Button>
+          <Button variant='info' onClick={handleMovies} >
+            Get Movies
+          </Button>
+          <Timer 
+            title='Weather Timer'
+            status={weatherStatus}
+          />
+          <Timer 
+            title='Movie Timer'
+            status={movieStatus}
+          />
           <Weather
             weatherData={weatherData}
             location={location}
+            updateStatus={setWeatherStatus}
+            date={weatherDate}
           />
           <Movies
             movies={movieData}
             location={location}
+            updateStatus={setMovieStatus}
+            date={movieDate}
           />
         </>
       )}
