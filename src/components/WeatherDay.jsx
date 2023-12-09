@@ -3,6 +3,7 @@ function WeatherDay(props) {
     <div key={props.index}>
       <p>Description: {props.day.description}</p>
       <p>Date: {props.day.date}</p>
+      <p>Retrieved: {props.date}</p>
     </div>
   );
 }
