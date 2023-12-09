@@ -1,7 +1,6 @@
 import Card from 'react-bootstrap/Card';
 import Carousel from 'react-bootstrap/Carousel';
 import Movie from './Movie';
-import { useState } from 'react';
 
 function Movies(props) {
   if (!props.movies) {
@@ -9,9 +8,6 @@ function Movies(props) {
   } else {
     props.updateStatus(false);
   }
-
-
-  // const newDate = new Date();
   
   const filteredMovies = props.movies.filter(movie => {
     if (typeof movie === 'object') {
@@ -27,7 +23,7 @@ function Movies(props) {
   });
 
   return (
-    <Card>
+    <Card style={{ width: '60%', marginTop: '20px' }}>
       <Card.Body>
         <Card.Title>Movies</Card.Title>
         {filteredMovies.length > 0 ? (

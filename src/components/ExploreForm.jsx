@@ -6,6 +6,7 @@ import Movies from './Movies';
 import { useState } from 'react';
 import axios from 'axios';
 import Timer from './Timer';
+import Restaurants from './Restaurants';
 
 const API_KEY = import.meta.env.VITE_GEO_API_KEY;
 
@@ -15,14 +16,20 @@ function ExploreForm(props) {
   const [fullLocation, setFullLocation] = useState('');
   const [lat, setLat] = useState('');
   const [long, setLong] = useState('');
+
   const [formSubmitted, setFormSubmitted] = useState(false);
+
   const [weatherData, setWeatherData] = useState(null);
   const [movieData, setMovieData] = useState(null);
+  const [yelpData, setYelpData] = useState(null);
+
   const [weatherStatus, setWeatherStatus] = useState(null);
   const [movieStatus, setMovieStatus] = useState(null);
+  const [yelpStatus, setYelpStatus] = useState(null);
 
   const [weatherDate, setWeatherDate] = useState('');
   const [movieDate, setMovieDate] = useState('');
+  const [yelpDate, setYelpDate] = useState('');
 
   const testError = async (e) => {
     e.preventDefault();
@@ -41,8 +48,10 @@ function ExploreForm(props) {
         // Reset data if the input has changed
         setMovieData(null);
         setWeatherData(null);
+        setYelpData(null);
         setMovieStatus(null);
         setWeatherStatus(null);
+        setYelpStatus(null);
       }
 
       // Make API call and update cache
@@ -90,13 +99,28 @@ function ExploreForm(props) {
     }
   };
 
+  const handleYelp = async (e) => {
+    e.preventDefault();
+    setYelpStatus(true);
+    const date = new Date();
+    setYelpDate(date.toString());
+    try {
+      const yelpAPI = `https://city-explorer-api-o9yy.onrender.com/yelp?lat=${lat}&lon=${long}`;
+      const yelpResponse = await axios.get(yelpAPI);
+      setYelpData(yelpResponse.data);
+    } catch (error) {
+      setYelpStatus(false);
+      props.onError(error);
+    }
+  }
+
   return (
     <section className='explore-form-area'>
       <Form
         onSubmit={handleSubmit}
+        className='explore-form'
       >
         <Form.Group
-          className='explore-form'
           controlId='exploreFormCity'
         >
           <Form.Label>Look up any city!</Form.Label>
@@ -130,32 +154,58 @@ function ExploreForm(props) {
               />
             </Card.Body>
           </Card>
-          <Button variant='info' onClick={handleWeather} >
-            Get Weather
-          </Button>
-          <Button variant='info' onClick={handleMovies} >
-            Get Movies
-          </Button>
-          <Timer 
-            title='Weather Timer'
-            status={weatherStatus}
-          />
-          <Timer 
-            title='Movie Timer'
-            status={movieStatus}
-          />
-          <Weather
-            weatherData={weatherData}
-            location={location}
-            updateStatus={setWeatherStatus}
-            date={weatherDate}
-          />
-          <Movies
-            movies={movieData}
-            location={location}
-            updateStatus={setMovieStatus}
-            date={movieDate}
-          />
+          <section className='timer-container'>
+            <div className='api-timer'>
+              <Button variant='info' onClick={handleWeather} >
+                Get Weather
+              </Button>
+              <Timer
+                title='Weather Timer'
+                status={weatherStatus}
+              />
+            </div>
+            <div className='api-timer'>
+              <Button variant='info' onClick={handleMovies} >
+                Get Movies
+              </Button>
+              <Timer
+                title='Movie Timer'
+                status={movieStatus}
+              />
+            </div>
+            <div className='api-timer'>
+              <Button variant='info' onClick={handleYelp} >
+                Get Restaurants
+              </Button>
+              <Timer
+                title='Yelp Timer'
+                status={yelpStatus}
+              />
+            </div>
+          </section>
+          <section className='api-render-container'>
+            <div className='weather-movie-container'>
+              <Weather
+                weatherData={weatherData}
+                location={location}
+                updateStatus={setWeatherStatus}
+                date={weatherDate}
+              />
+              <Movies
+                movies={movieData}
+                location={location}
+                updateStatus={setMovieStatus}
+                date={movieDate}
+              />
+            </div>
+            <Restaurants
+              restaurants={yelpData}
+              location={location}
+              updateStatus={setYelpStatus}
+              date={yelpDate}
+            />
+          </section>
+
         </>
       )}
     </section>

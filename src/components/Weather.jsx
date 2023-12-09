@@ -1,19 +1,15 @@
 import Card from 'react-bootstrap/Card';
 import WeatherDay from './WeatherDay';
-import { useState } from 'react';
 
 function Weather(props) {
   if (!props.weatherData) {
     return null;
   } else {
     props.updateStatus(false);
-    
   }
 
-  // const newDate = new Date();
-
   return (
-    <Card style={{ width: '20vw', marginTop: '20px' }}>
+    <Card style={{ width: '40%', marginTop: '20px', marginRight: '30px' }}>
       <Card.Body>
         <Card.Title>{props.location}</Card.Title>
         <Card.Text>Weather</Card.Text>
@@ -28,6 +24,9 @@ function Weather(props) {
           ))}
         </>
       </Card.Body>
+      <Card.Footer>
+        Retrieved: {props.date}
+      </Card.Footer>
     </Card>
   );
 }
