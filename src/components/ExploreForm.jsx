@@ -5,6 +5,7 @@ import Weather from './Weather';
 import Movies from './Movies';
 import { useState } from 'react';
 import axios from 'axios';
+import Timer from './Timer';
 
 const API_KEY = import.meta.env.VITE_GEO_API_KEY;
 
@@ -17,13 +18,34 @@ function ExploreForm(props) {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [weatherData, setWeatherData] = useState(null);
   const [movieData, setMovieData] = useState(null);
+  const [weatherStatus, setWeatherStatus] = useState(null);
+  const [movieStatus, setMovieStatus] = useState(null);
+
+  const [weatherDate, setWeatherDate] = useState('');
+  const [movieDate, setMovieDate] = useState('');
+
+  const testError = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.get('https://city-explorer-api-o9yy.onrender.com/error');
+    } catch (error) {
+      props.onError(error);
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const city = e.target.elements.exploreFormCity.value;
+      if (String(city).toLowerCase() !== String(location).toLowerCase()) {
+        // Reset data if the input has changed
+        setMovieData(null);
+        setWeatherData(null);
+        setMovieStatus(null);
+        setWeatherStatus(null);
+      }
+
       // Make API call and update cache
-      console.log('calling submit');
       const API = `https://us1.locationiq.com/v1/search.php?key=${API_KEY}&q=${city}&format=json`;
       const response = await axios.get(API);
 
@@ -39,37 +61,34 @@ function ExploreForm(props) {
 
   const handleWeather = async (e) => {
     e.preventDefault();
+    setWeatherStatus(true);
+    const date = new Date();
+    setWeatherDate(date.toString());
     try {
-      // Make API call and update cache
-      console.log('calling weather');
       const weatherApi = `https://city-explorer-api-o9yy.onrender.com/weather?lat=${lat}&lon=${long}`;
       const weatherResponse = await axios.get(weatherApi);
       setWeatherData(weatherResponse.data);
     } catch (error) {
-      console.log(error);
+      setWeatherStatus(false);
       props.onError(error);
     }
   };
 
   const handleMovies = async (e) => {
     e.preventDefault();
+    setMovieStatus(true);
+    const date = new Date();
+    setMovieDate(date.toString());
     try {
       const movieAPI = `https://city-explorer-api-o9yy.onrender.com/movies`;
       // Make API call and update cache
-      console.log('calling movie');
       const movieResponse = await axios.get(movieAPI);
       setMovieData(movieResponse.data);
-
     } catch (error) {
+      setMovieStatus(false);
       props.onError(error);
     }
   };
-
-  const handleBoth = async (e) => {
-    e.preventDefault();
-    await handleWeather(e);
-    await handleMovies(e);
-  }
 
   return (
     <section className='explore-form-area'>
@@ -110,17 +129,32 @@ function ExploreForm(props) {
                 className=''
               />
             </Card.Body>
-            <Button variant='info' onClick={handleBoth} >
-              Get Weather
-            </Button>
           </Card>
+          <Button variant='info' onClick={handleWeather} >
+            Get Weather
+          </Button>
+          <Button variant='info' onClick={handleMovies} >
+            Get Movies
+          </Button>
+          <Timer 
+            title='Weather Timer'
+            status={weatherStatus}
+          />
+          <Timer 
+            title='Movie Timer'
+            status={movieStatus}
+          />
           <Weather
             weatherData={weatherData}
             location={location}
+            updateStatus={setWeatherStatus}
+            date={weatherDate}
           />
           <Movies
             movies={movieData}
             location={location}
+            updateStatus={setMovieStatus}
+            date={movieDate}
           />
         </>
       )}
