@@ -9,7 +9,10 @@ function App() {
   const [error, setError] = useState(null);
 
   const handleAPIError = (error) => {
-    setError({ code: error?.response?.status || 'Unknown Error' });
+    setError({
+      code: error?.response?.status || 'Unknown Error',
+      message: error?.response?.data?.message || 'No additional error message',
+    });
   };
 
   return (
@@ -17,7 +20,7 @@ function App() {
       <ExploreForm 
         onError={handleAPIError}
       />
-      {error && <Error errorCode={error.code} onClose={() => setError(null)} />}
+      {error && <Error errorCode={error.code} errorMessage={error.message} onClose={() => setError(null)} />}
     </>
   )
 }
