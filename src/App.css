@@ -1,5 +1,7 @@
 #root {
-  max-width: 1280px;
+  width: 50%;
+  display: flex;
+  justify-content: center;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -44,6 +46,18 @@
   color: #888;
 }
 
+.explore-form-area {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.explore-form {
+  width: 70%;
+}
+
 .explore-form-button {
   margin-top: 1vh;
 }
@@ -70,3 +84,26 @@
   margin-bottom: 2vh;
   padding: 1em;
 }
+
+.timer-container {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+}
+.timer-container .api-timer {
+  max-width: 30%;
+}
+
+.api-render-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.weather-movie-container {
+  display: flex;
+  align-items: center;
+}
+
