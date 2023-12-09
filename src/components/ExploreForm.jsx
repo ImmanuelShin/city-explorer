@@ -105,8 +105,7 @@ function ExploreForm(props) {
     const date = new Date();
     setYelpDate(date.toString());
     try {
-      // const yelpAPI = `https://city-explorer-api-o9yy.onrender.com/yelp?lat=${lat}&lon=${long}`;
-      const yelpAPI = `http://localhost:3003/yelp?lat=${lat}&lon=${long}`;
+      const yelpAPI = `https://city-explorer-api-o9yy.onrender.com/yelp?lat=${lat}&lon=${long}`;
       const yelpResponse = await axios.get(yelpAPI);
       setYelpData(yelpResponse.data);
       console.log(yelpResponse.data);
