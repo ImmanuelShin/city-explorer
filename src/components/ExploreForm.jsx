@@ -108,7 +108,6 @@ function ExploreForm(props) {
       const yelpAPI = `https://city-explorer-api-o9yy.onrender.com/yelp?lat=${lat}&lon=${long}`;
       const yelpResponse = await axios.get(yelpAPI);
       setYelpData(yelpResponse.data);
-      console.log(yelpResponse.data);
     } catch (error) {
       setYelpStatus(false);
       props.onError(error);
